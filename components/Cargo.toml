@@ -1,0 +1,16 @@
+[package]
+name = "ui0-components"
+description = "Components for ui0"
+version = "0.0.1"
+edition = "2021"
+homepage = "https://ui0.dev"
+license = "MIT"
+repository = "https://github.com/dm33tri/ui0"
+
+[lib]
+path = "lib.rs"
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1"
+quote = "1"
