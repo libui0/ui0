@@ -1,12 +1,6 @@
-[package]
-name = "ui0"
-version = "0.0.1"
-edition = "2021"
-description = "Tool with included UI components"
-readme = "README.md"
-homepage = "https://ui0.dev"
-license = "MIT"
-repository = "https://github.com/dm33tri/ui0"
-
-[dependencies]
-ui0-components = { path = "./components", version = "0" }
+[workspace]
+members = [
+  "crates/ui0",
+  "crates/components",
+]
+resolver = "2"

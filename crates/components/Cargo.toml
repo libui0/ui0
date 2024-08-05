@@ -5,10 +5,9 @@ version = "0.0.1"
 edition = "2021"
 homepage = "https://ui0.dev"
 license = "MIT"
-repository = "https://github.com/dm33tri/ui0"
+repository = "https://github.com/libui0/ui0"
 
 [lib]
-path = "lib.rs"
 proc-macro = true
 
 [dependencies]
