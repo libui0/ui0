@@ -26,4 +26,7 @@ oxc_resolver = "1"
 oxc_semantic = "0"
 oxc_span = "0"
 oxc_syntax = "0"
+oxc_transformer = "0"
 oxc_traverse = "0"
+
+ui0-components = { path = "../components" }

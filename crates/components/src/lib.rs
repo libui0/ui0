@@ -5,18 +5,14 @@ use std::fs;
 #[proc_macro]
 pub fn load(_item: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let mut components = Vec::new();
-
-    if let Ok(entries) = fs::read_dir("components") {
-        for entry in entries {
-            if let Ok(path) = entry.map(|entry| entry.path()) {
-                if path.is_file() && path.extension().is_some_and(|ext| ext == "jsx") {
-                    if let Some(name) = path.file_name().and_then(|name| name.to_str()) {
-                        if let Ok(content) = fs::read_to_string(&path) {
-                            components.push((name.to_string(), content));
-                        }
-                    }
-                }
-            }
+    let Ok(entries) = fs::read_dir("components") else { return Default::default(); };
+    for entry in entries {
+        let Ok(entry) = entry else { continue; };
+        let path = entry.path();
+        if path.is_file() && path.extension().is_some_and(|ext| ext == "jsx" || ext == "tsx") {
+            let Some(name) = path.file_name().and_then(|name| name.to_str()) else { continue };
+            let Ok(content) = fs::read_to_string(&path) else { continue; };
+            components.push((name.to_string(), content));
         }
     }
 

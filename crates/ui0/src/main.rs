@@ -1,4 +1,5 @@
-use axum::extract::Request;
+use axum::http::header::CONTENT_TYPE;
+use axum::http::Response;
 use axum::{response::Html, routing::get, Router};
 use clap::{Args, Parser};
 use console::{Key::Char, Term};
@@ -8,27 +9,36 @@ use std::{future::pending, io::ErrorKind::AddrInUse};
 use tokio::net::TcpListener;
 use ui0::Bundle;
 
+const HTML: &str = "<!doctype html>
+<html>
+<head>
+<script type=\"module\" src=\"/index.js\"></script>
+<title>UI0</title>
+</head>
+<body>
+<strong>UI0</strong>
+</body>
+</html>";
+
 async fn preview() {
+    let components = ui0_components::load!();
     let allocator = Allocator::default();
-    let bundle = Bundle::new(&allocator);
+    let mut bundle = Bundle::new(&allocator);
+    for (_name, source) in components {
+        bundle.add(source);
+    }
     let js = bundle.js();
     let app = Router::new()
-        .route("/index.js", get(|_request: Request| async {
-            js
-        }))
-        .fallback(get(|| async {
-            Html(
-                "<!doctype html>\
-            <html>\
-            <head>\
-                <title>UI0</title>\
-            </head>\
-            <body>\
-                <strong>UI0</strong>\
-            </body>\
-            </html>",
-            )
-        }));
+        .route(
+            "/index.js",
+            get(|| async {
+                Response::builder()
+                    .header(CONTENT_TYPE, "application/javascript")
+                    .body(js)
+                    .unwrap()
+            }),
+        )
+        .fallback(get(|| async { Html(HTML) }));
 
     for port in 1703..=1998 {
         let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), port);
